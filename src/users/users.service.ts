@@ -1,16 +1,22 @@
 import { Injectable } from '@nestjs/common';
+import { Role } from './roles.enum';
 
 @Injectable()
 export class UsersService {
-  private users = [
-    { id: 1, name: 'Alice', email: 'alice@example.com', role: 'ADMIN' },
-    { id: 2, name: 'Bob', email: 'bob@example.com', role: 'ENG' },
-    { id: 3, name: 'Carol', email: 'carol@example.com', role: 'ENG' },
-    { id: 4, name: 'Dave', email: 'dave@example.com', role: 'INTERN' },
-    { id: 5, name: 'Eve', email: 'eve@example.com', role: 'ENG' },
+  private users: Array<{
+    id: number;
+    name: string;
+    email: string;
+    role: Role;
+  }> = [
+    { id: 1, name: 'Alice', email: 'alice@example.com', role: Role.ADMIN },
+    { id: 2, name: 'Bob', email: 'bob@example.com', role: Role.ENG },
+    { id: 3, name: 'Carol', email: 'carol@example.com', role: Role.ENG },
+    { id: 4, name: 'Dave', email: 'dave@example.com', role: Role.INTERN },
+    { id: 5, name: 'Eve', email: 'eve@example.com', role: Role.ENG },
   ];
 
-  findAll(role?: 'ADMIN' | 'ENG' | 'INTERN') {
+  findAll(role?: Role) {
     if (role) {
       return this.users.filter((user) => user.role === role);
     }
@@ -22,11 +28,7 @@ export class UsersService {
     return user || null;
   }
 
-  create(user: {
-    name: string;
-    email: string;
-    role: 'ADMIN' | 'ENG' | 'INTERN';
-  }) {
+  create(user: { name: string; email: string; role: Role }) {
     const usersByHighestId = this.users.reduce((a, b) => (a.id > b.id ? a : b));
     const newUser = {
       id: usersByHighestId.id + 1,
@@ -36,10 +38,7 @@ export class UsersService {
     return newUser;
   }
 
-  update(
-    id: number,
-    user: { name?: string; email?: string; role?: 'ADMIN' | 'ENG' | 'INTERN' },
-  ) {
+  update(id: number, user: { name?: string; email?: string; role?: Role }) {
     const index = this.users.findIndex((user) => user.id === id);
     if (index === -1) {
       return null;
